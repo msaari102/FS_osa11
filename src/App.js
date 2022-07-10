@@ -196,7 +196,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Notification errorMessage={errorMessage} successMessage = {successMessage} />
       <Filter newFilter = {newFilter} handleFilterChange = {handleFilterChange} />
-      <h3>add a new</h3>
+      <h3>add a new person</h3>
       <PersonForm addName = {addName} newName = {newName} handleNameChange = {handleNameChange}
         newNumber = {newNumber} handleNumberChange = {handleNumberChange}
         setErrorMessage = {setErrorMessage} setSuccessMessage = {setSuccessMessage} />
