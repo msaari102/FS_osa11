@@ -69,6 +69,10 @@ app.get('/info', (req, res, next) => {
   })
 })
 
+app.get('/health', (req, res) => {
+  res.send('ok')
+})
+
 /*
   app.get('/api/persons', (req, res) => {
     res.json(persons)
