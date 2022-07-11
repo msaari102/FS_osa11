@@ -24,6 +24,14 @@ jobs:
         run: npm run eslint
       - name: build
         run: npm run build  
+      - name: test
+        run: npm run test    
+      - name: e2e tests
+        uses: cypress-io/github-action@v2
+        with:
+          command: npm run test:e2e
+          start: npm run start
+          wait-on: http://localhost:3001  
       - name: Heroku update    
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip') }}
@@ -34,3 +42,37 @@ jobs:
           healthcheck: "https://afternoon-mountain-40355.herokuapp.com/health"
           checkstring: "ok"
           rollbackonhealthcheckfailed: true
+      - name: Test Success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ github.event_name == 'push'  && success()}}
+        with:
+            severity: info
+            text: A new version of phonebook deployed
+            description:
+            details: to https://afternoon-mountain-40355.herokuapp.com/ by ${{ github.actor}}
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ github.event_name == 'push' && failure()}} 
+        with:
+            severity: error
+            text: Build failed
+            description: commit
+            details: 'https://github.com/msaari102/osa11/commit/${{github.sha}} by ${{github.actor}} broke the build :('
+            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}     
+
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    env:
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.36.0
+        if: ${{ github.event_name == 'push' && !contains(env.COMMIT_MESSAGES, '#skip') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   
+          DEFAULT_BUMP: patch             
