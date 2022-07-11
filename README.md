@@ -1,2 +1,2 @@
-https://fierce-thicket-98688.herokuapp.com/
+https://afternoon-mountain-40355.herokuapp.com
 http://localhost:3001/
