@@ -41,25 +41,7 @@ jobs:
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           healthcheck: "https://afternoon-mountain-40355.herokuapp.com/health"
           checkstring: "ok"
-          rollbackonhealthcheckfailed: true
-      - name: Test Success
-        uses: rjstone/discord-webhook-notify@v1
-        if: ${{ github.event_name == 'push'  && success()}}
-        with:
-            severity: info
-            text: A new version of phonebook deployed
-            description:
-            details: to https://afternoon-mountain-40355.herokuapp.com/ by ${{ github.actor}}
-            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Failure
-        uses: rjstone/discord-webhook-notify@v1
-        if: ${{ github.event_name == 'push' && failure()}} 
-        with:
-            severity: error
-            text: Build failed
-            description: commit
-            details: 'https://github.com/msaari102/osa11/commit/${{github.sha}} by ${{github.actor}} broke the build :('
-            webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}     
+          rollbackonhealthcheckfailed: true    
 
   tag_release:
     needs: [simple_deployment_pipeline]
